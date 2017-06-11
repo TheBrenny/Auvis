@@ -29,3 +29,5 @@ sketch.template.draw = function() {
 ```
 
 Something's broke? Go ahead and fix it and submit a PR. Can't fix it? Create a new issue and someone will!
+
+###### Want to see something cool? Play [this song](https://soundcloud.com/your_secret/saski-faking-bright), while on the "Exagerate" visualisation!
