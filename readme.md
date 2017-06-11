@@ -12,6 +12,8 @@ Features:
 2. Visualises the sound from a "line in"
 3. Easily extendible!
 
+Don't stress if you can't play sound to Stereo Mix/Line In on your computer. I'm just waiting on SoundCloud to get back to me with a wicked API Key, and then I'll be streaming a Soundcloud Playlist! Oooooooweeeee!
+
 Want to contribute your own creation? All you have to do is follow this template:
 
 ```javascript
