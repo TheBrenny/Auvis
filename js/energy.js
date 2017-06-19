@@ -1,7 +1,5 @@
 // Uses the getEnergy() function to create circles that bobble!
 
-registerSketch("energy");
-
 var energies;
 
 sketch.energy.init = function() {};

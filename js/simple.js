@@ -1,7 +1,5 @@
 // Pure and simple!
 
-registerSketch("simple");
-
 sketch.simple.init = function() {};
 
 sketch.simple.draw = function() {

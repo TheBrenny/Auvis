@@ -37,6 +37,7 @@ p5.FFT.prototype.setBins = function(bins) {
 };
 
 function setup() {
+    loadSketchRegister();
     canvas = createCanvas(windowWidth, windowWidth);
     canvas.style("align-self", "center");
     canvas.style("margin", "auto");
@@ -69,7 +70,7 @@ function draw() {
     drawTitle();
 
     spectrum = fft.analyze();
-    if (sketch.selected && sketch[sketch.selected].draw()) sketch[sketch.selected].draw();
+    if (sketch.selected && sketch[sketch.selected].draw) sketch[sketch.selected].draw();
 }
 
 function windowResized() {
@@ -84,8 +85,10 @@ function touchStarted() {
     sketchChanged();
 }
 
-function registerSketch(sketchName) {
-    sketch[sketchName] = {};
+function registerSketch(sketchName, fileName) {
+    sketch[sketchName] = {
+        "fileName": fileName
+    };
 }
 
 function sketchChanged() {
@@ -99,3 +102,19 @@ function resetSketch() {
     fft.setBins(bins);
     alphaVal = 750;
 }
+
+function loadSketchRegister() {
+    var body = document.body;
+    var script;
+    for (var s in sketch) {
+        script = document.createElement("script");
+        script.src = "./js/" + sketch[s].fileName + ".js";
+        body.appendChild(script);
+    }
+}
+
+registerSketch("simple", "simple");
+registerSketch("centroid", "centroid");
+registerSketch("energy", "energy");
+registerSketch("exagerate", "exagerate");
+registerSketch("background", "background");

@@ -1,7 +1,5 @@
 //Flashes background color based on the highest energy.
 
-registerSketch("background");
-
 var energyColors = {
     bass: null,
     lowMid: null,

@@ -1,7 +1,5 @@
 // Uses the getEnergy() function to create circles that bobble!
 
-registerSketch("exagerate");
-
 var previousEnergiesMax = 10;
 var energyChangeThreshold = 75;
 var exagerationMultiplier = 3;

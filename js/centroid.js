@@ -1,7 +1,5 @@
 // Uses the getCentroid() function to find the centre of our visualiser.
 
-registerSketch("centroid");
-
 var centroid;
 
 sketch.centroid.init = function() {};
