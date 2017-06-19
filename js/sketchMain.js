@@ -86,6 +86,7 @@ function touchStarted() {
 }
 
 function registerSketch(sketchName, fileName) {
+    fileName = !!fileName ? fileName : sketchName;
     sketch[sketchName] = {
         "fileName": fileName
     };
@@ -113,8 +114,8 @@ function loadSketchRegister() {
     }
 }
 
-registerSketch("simple", "simple");
-registerSketch("centroid", "centroid");
-registerSketch("energy", "energy");
-registerSketch("exagerate", "exagerate");
-registerSketch("background", "background");
+registerSketch("simple");
+registerSketch("centroid");
+registerSketch("energy");
+registerSketch("exagerate");
+registerSketch("background");
