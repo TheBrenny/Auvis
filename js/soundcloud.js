@@ -29,7 +29,7 @@ function SoundcloudPlayer(fft, p5) {
             if (!!this.currentTrack.trackObj) {
                 this.currentTrack.trackObj.play();
             }
-        };
+        }.bind(this);
         if (!this.currentTrack.trackObj) {
             this.currentTrack.trackObj = loadSound(this.currentTrack.stream, function() {
                 fft.setInput(this.currentTrack.trackObj);
