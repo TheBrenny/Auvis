@@ -34,7 +34,7 @@ function SoundcloudPlayer(fft, p5) {
             this.currentTrack.trackObj = loadSound(this.currentTrack.stream + "?client_id=" + SOUNDCLOUD_CONFIG.id, function() {
                 fft.setInput(this.currentTrack.trackObj);
                 cb();
-            });
+            }.bind(this));
         } else cb();
     };
     this.pause = function() {
