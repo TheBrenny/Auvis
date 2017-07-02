@@ -31,7 +31,7 @@ function SoundcloudPlayer(fft, p5) {
             }
         }.bind(this);
         if (!this.currentTrack.trackObj) {
-            this.currentTrack.trackObj = loadSound(this.currentTrack.stream + "?client_id=" + SC.client_id, function() {
+            this.currentTrack.trackObj = loadSound(this.currentTrack.stream + "?client_id=" + SOUNDCLOUD_CONFIG.id, function() {
                 fft.setInput(this.currentTrack.trackObj);
                 cb();
             });
