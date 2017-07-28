@@ -27,7 +27,6 @@ sketch.template.draw = function() {
     // This is the same as p5's draw function.
     // Don't stress, fft.analyze() has already been called for convenience.
 }
-
 ```
 
 Something's broke? Go ahead and fix it and submit a PR. Can't fix it? Create a new issue and someone will!
