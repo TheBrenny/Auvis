@@ -217,7 +217,6 @@ function mouseMoved() {
 }
 
 function registerSketch(sketchName, fileName) {
-    fileName = !!fileName ? fileName : sketchName;
     sketch[sketchName] = {
         "fileName": fileName
     };
@@ -245,39 +244,8 @@ function loadSketchRegister() {
     }
 }
 
-function touchedWidget(applyLogic) {
-    var mx = mouseX;
-    var my = mouseY;
-    var x = scWidget.x;
-    var y = scWidget.y;
-    var w = scWidget.width;
-    var h = scWidget.height;
-
-    if (collidePointRect(mx, my, x, y, w, h)) {
-        if (!applyLogic) return true;
-
-        if (collidePointCircle(mx, my, x + w - 40, y + 40, 30)) {
-            scWidget.player.next();
-        }
-        if (collidePointCircle(mx, my, x + w - 80, y + 40, 30)) {
-            if (scWidget.player.isPlaying()) scWidget.player.pause();
-            else scWidget.player.play();
-        }
-        if (collidePointCircle(mx, my, x + w - 120, y + 40, 30)) {
-            scWidget.player.previous();
-        }
-        if (collidePointRect(mx, my, x + 10, y + h - 30, w - 20, 10)) {
-            scWidget.player.seek(map(mx, x + 10, x + w - 20, 0, scWidget.player.getTimeMax()));
-        }
-
-        return true;
-    }
-
-    return false;
-}
-
-registerSketch("simple");
-registerSketch("centroid");
-registerSketch("energy");
-registerSketch("exagerate");
-registerSketch("background");
+registerSketch("simple", "simple");
+registerSketch("centroid", "centroid");
+registerSketch("energy", "energy");
+registerSketch("exagerate", "exagerate");
+registerSketch("background", "background");

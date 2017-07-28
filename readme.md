@@ -14,9 +14,11 @@ Features:
 
 Don't stress if you can't play sound to Stereo Mix/Line In on your computer. I'm just waiting on SoundCloud to get back to me with a wicked API Key, and then I'll be streaming a Soundcloud Playlist! Oooooooweeeee!
 
-Want to contribute your own creation? All you have to do is create a new sketch:
+Want to contribute your own creation? All you have to do is follow this template:
 
 ```javascript
+registerSketch("template");
+
 sketch.template.init = function() {
     // This is the same as p5's setup function.
 }
@@ -25,9 +27,8 @@ sketch.template.draw = function() {
     // This is the same as p5's draw function.
     // Don't stress, fft.analyze() has already been called for convenience.
 }
-```
 
-And then edit `sketchMain.js` by appending `registerSketch("template")` at the end of the file. Your sketch will then be added to the list, where you'll just need to click on the canvas to cycle through to it!
+```
 
 Something's broke? Go ahead and fix it and submit a PR. Can't fix it? Create a new issue and someone will!
 
