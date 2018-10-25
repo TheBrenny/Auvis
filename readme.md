@@ -26,6 +26,7 @@ sketch.template.init = function() {
 sketch.template.draw = function() {
     // This is the same as p5's draw function.
     // Don't stress, fft.analyze() has already been called for convenience.
+    // So just use the spectrum variable or the fft.getEnergy() function!
 }
 ```
 

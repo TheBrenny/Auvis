@@ -12,6 +12,6 @@ sketch.simple.draw = function() {
         var x = map(log(i), 0, log(spectrum.length), 0, width);
         var h = map(spectrum[i], 0, 255, 0, height);
         var rectangle_width = (log(i + 1) - log(i)) * (width / log(spectrum.length));
-        rect(x, height, rectangle_width, -h)
+        rect(x, height, rectangle_width, -h);
     }
 };
