@@ -2,6 +2,7 @@
 
 var previousEnergiesMax = 10;
 var energyChangeThreshold = 75;
+//var exagerationMultiplier = 3;
 var exagerationMultiplier = 3;
 var smoothingFactor = 0.9;
 var previousEnergies = [];
@@ -40,7 +41,8 @@ function exagerateEnergies(incoming) {
         fAve /= previousEnergies.length;
 
         if (incoming[e] - fAve > energyChangeThreshold) {
-            f += (incoming[e] - fAve) * exagerationMultiplier;
+            //f += (incoming[e] - fAve) * exagerationMultiplier;
+            f *= exagerationMultiplier;
             exagerated = true;
         }
 
@@ -53,11 +55,11 @@ function exagerateEnergies(incoming) {
 
 sketch.exagerate.draw = function() {
     var energies = exagerateEnergies({
-        bass: fft.getEnergy("bass"),
-        lowMid: fft.getEnergy("lowMid"),
-        mid: fft.getEnergy("mid"),
-        highMid: fft.getEnergy("highMid"),
-        treble: fft.getEnergy("treble")
+        bass: getEnergy("bass"),
+        lowMid: getEnergy("lowMid"),
+        mid: getEnergy("mid"),
+        highMid: getEnergy("highMid"),
+        treble: getEnergy("treble")
     });
     colorMode(HSB);
     var i = 0;

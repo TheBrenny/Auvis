@@ -4,25 +4,28 @@ var screenSizeMultiplier;
 var alphaValMax = 750;
 var alphaVal = alphaValMax;
 var alphaFadeVal = 7;
+let minFreq = 20;
+let maxFreq = 14000;
 
 var canvas;
 var soundIn;
 var fft;
 var amp;
-var spectrum;
+var getEnergy = () => {};
+var getVolume = () => {};
 
 var sketch = {};
 
 Object.defineProperty(Object.prototype, "objSize", {
     enumerable: false,
-    value: function() {
+    value: function () {
         return Object.keys(this).length;
     }
 });
 
 Object.defineProperty(Array.prototype, "remove", {
     enumerable: false,
-    value: function() {
+    value: function () {
         var l, a = arguments;
         for (var i = 0; i < a.length; i++) {
             l = this.indexOf(a[i]);
@@ -32,7 +35,7 @@ Object.defineProperty(Array.prototype, "remove", {
     }
 });
 
-p5.FFT.prototype.setBins = function(bins) {
+p5.FFT.prototype.setBins = function (bins) {
     this.bins = bins;
     this.analyser.fftSize = bins * 2;
 };
@@ -48,6 +51,8 @@ function setup() {
     soundIn.start();
     fft = new p5.FFT();
     fft.setInput(soundIn);
+    getEnergy = fft.getEnergy.bind(fft);
+    getVolume = soundIn.getLevel.bind(soundIn);
 
     binWidth = windowWidth / bins;
     windowResized();
@@ -72,8 +77,12 @@ function draw() {
     colorMode(RGB);
     background(16, 16, 16);
 
-    spectrum = fft.analyze();
-    if (sketch.selected && sketch[sketch.selected].draw) sketch[sketch.selected].draw();
+    fft.analyze();
+    if (sketch.selected && sketch[sketch.selected].draw) {
+        push();
+        sketch[sketch.selected].draw();
+        pop();
+    }
 
     drawTitle();
 }
@@ -85,6 +94,7 @@ function windowResized() {
 
 function touchStarted() {
     mouseMoved();
+    getAudioContext().resume();
 
     var c = Object.keys(sketch).remove("selected");
     var i = (c.indexOf(sketch.selected) + 1) % c.length;
@@ -126,7 +136,10 @@ function loadSketchRegister() {
 }
 
 registerSketch("simple");
+registerSketch("logd");
 registerSketch("centroid");
 registerSketch("energy");
 registerSketch("exagerate");
 registerSketch("background");
+registerSketch("kuana");
+registerSketch("madcat");

@@ -1,17 +1,22 @@
 // Pure and simple!
 
-sketch.simple.init = function() {};
+let rWidth = 0;
 
-sketch.simple.draw = function() {
+sketch.simple.init = function () {
+    rWidth = width / bins;
+};
+
+sketch.simple.draw = function () {
     colorMode(HSB);
+    noStroke();
 
-    for (var i = 0; i < spectrum.length; i++) {
-        var c = map(log(i), 0, log(spectrum.length), 0, 180);
-        stroke(c, 255, 100);
+    let c, x, h;
+    for (var i = 0; i < bins; i++) {
+        c = map(i, 0, bins, 0, 300);
         fill(c, 255, 100);
-        var x = map(log(i), 0, log(spectrum.length), 0, width);
-        var h = map(spectrum[i], 0, 255, 0, height);
-        var rectangle_width = (log(i + 1) - log(i)) * (width / log(spectrum.length));
-        rect(x, height, rectangle_width, -h);
+        x = i * rWidth;
+        h = map(getEnergy(map(i, 0, bins, minFreq, maxFreq)), 0, 255, 0, height);
+
+        rect(x, height, rWidth, -h);
     }
 };
