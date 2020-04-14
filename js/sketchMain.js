@@ -6,9 +6,10 @@ var alphaVal = alphaValMax;
 var alphaFadeVal = 7;
 var soundFiles = [null];
 
+var contextReady = false;
 var canvas;
 var soundIn;
-var soundState = -1;
+var soundState = 0;
 var fft;
 var amp;
 var spectrum;
@@ -28,9 +29,7 @@ freqRanges.allhigh = [freqRanges.high[0], freqRanges.super[1]];
 
 var fileLoading = {
 	current: null,
-	alphaValMax: 750,
 	alphaVal: 0,
-	alphaFadeVal: 7
 	// obj: {
 	//	status: 0,
 	//	sound: null
@@ -74,9 +73,8 @@ function setup() {
 
 	soundFormats('mp3', 'wav');
 	fft = new p5.FFT();
-	setFftFreqRanges();
 	setSoundAsInput();
-	soundState = 0;
+	setFftFreqRanges();
 
 	binWidth = windowWidth / bins;
 	windowResized();
@@ -92,37 +90,34 @@ function setFftFreqRanges() {
 }
 
 function setSoundAsInput() {
-	if (!!soundIn) soundIn.stop();
 	fileLoading.current = null;
 	soundIn = new p5.AudioIn();
 	fft.setInput(soundIn);
 	soundIn.start();
 }
 
+// Uses the createAudio() method instead of loadSound() above.
 function setSoundAsFile(soundPath) {
-	if (!!soundIn) soundIn.stop();
-
 	let fn = soundPath;
-	fileLoading.alphaVal = fileLoading.alphaValMax;
+	fileLoading.alphaVal = alphaValMax;
 	fileLoading.current = fn;
 
 	if (!!fileLoading[fn]) {
-		if (fileLoading[fn].status == 1) fileLoading[fn].sound.jump(); // reset play head on the object and begin playback
+		if (fileLoading[fn].status == 1) {
+			fileLoading[fn].sound.elt.currentTime = 0;
+		}
 	} else {
 		fileLoading[fn] = {};
-		fileLoading[fn].status = 0;
-		fileLoading[fn].fileName = soundPath;
-		fileLoading[fn].name = soundPath.substring(soundPath.lastIndexOf('/') + 1, soundPath.lastIndexOf("."));
-
-		fileLoading[fn].sound = loadSound(soundPath, () => {
-			fileLoading[fn].status = 1;
-			if (fileLoading.current == fn) fileLoading[fn].sound.play();
-		}, () => console.log("error loading file: " + soundPath), (v) => {
-			fileLoading[fn].status = v;
-		});
+		fileLoading[fn].filename = fn;
+		fileLoading[fn].name = fn.substring(fn.lastIndexOf("/") + 1, fn.lastIndexOf("."));
+		let ele = createAudio(fn);
+		ele.autoplay(true);
+		fileLoading[fn].sound = ele;
+		fileLoading[fn].status = fileLoading[fn].sound.elt.buffered; // TimeRanges object
 	}
-	soundIn = fileLoading[fn].sound;
 
+	soundIn = fileLoading[fn].sound;
+	soundIn.play();
 	fft.setInput(soundIn);
 }
 
@@ -143,20 +138,42 @@ function drawTitle() {
 function drawFileLoader() {
 	if (fileLoading.current == null) return;
 
-	let file = fileLoading[fileLoading.current];
-	if (file.status > 0 && fileLoading.alphaVal >= 0) {
+	if (fileLoading.alphaVal >= 0) {
+		// update status
+		fileLoading[fileLoading.current].status = fileLoading[fileLoading.current].sound.elt.buffered;
+		let file = fileLoading[fileLoading.current];
+
 		push();
 		colorMode(RGB);
 		fill(200, 30, 255, fileLoading.alphaVal);
 		noStroke();
 		textSize(30);
 		textAlign(CENTER, BOTTOM);
-		rect(0, height - 20, map(file.status, 0, 1, 0, width), 20);
+
+		// Draw status(es)
+		for (let i = 0; i < file.status.length; i++) {
+			let start = file.status.start(i);
+			let end = file.status.end(i);
+			let len = end - start;
+			let x = map(start, 0, file.sound.duration(), 0, width);
+			let w = map(len, 0, file.sound.duration(), 0, width);
+			rect(x, height - 20, w, 20);
+		}
 
 		if (!!file.name) text(file.name, width / 2, height - 25);
-
-		if (file.status == 1) fileLoading.alphaVal -= fileLoading.alphaFadeVal;
+		fileLoading.alphaVal -= alphaFadeVal;
 	}
+}
+
+function drawRequestContext() {
+	push();
+	colorMode(RGB);
+	textSize(100);
+	textAlign(CENTER, CENTER);
+	fill(200, 30, 255);
+	noStroke();
+	text("Touch/Click the screen to start!", width / 2, height/2);
+	pop();
 }
 
 function draw() {
@@ -168,6 +185,7 @@ function draw() {
 
 	drawTitle();
 	drawFileLoader();
+	if(!contextReady) drawRequestContext();
 }
 
 function getEnergy(freq1, freq2) {
@@ -183,7 +201,11 @@ function windowResized() {
 	screenSizeMultiplier = width / 800;
 }
 
-function touchStarted() {
+function touchStarted(event) {
+	if (!!event && !contextReady) {
+		getAudioContext().resume();
+		contextReady = true;
+	}
 	mouseMoved();
 
 	var c = Object.keys(sketch).remove("selected");
@@ -194,20 +216,22 @@ function touchStarted() {
 
 function mouseMoved() {
 	alphaVal = alphaValMax;
+	fileLoading.alphaVal = alphaValMax;
 }
 
 function keyPressed() {
 	switch (keyCode) {
 		case 32: // space bar
 			soundState = ++soundState % soundFiles.length;
+			if (!!soundIn) soundIn.stop();
 			if (soundState == 0) setSoundAsInput();
 			else if (soundState > 0) setSoundAsFile("sound/" + soundFiles[soundState]);
 			break;
 		case LEFT_ARROW: // left arrow
-			if (soundState != 0) soundIn.jump(soundIn.currentTime() - 10);
+			if (soundState != 0) soundIn.elt.currentTime -= 10;
 			break;
 		case RIGHT_ARROW: // right arrow
-			if (soundState != 0) soundIn.jump(soundIn.currentTime() + 10);
+			if (soundState != 0) soundIn.elt.currentTime += 10;
 			break;
 	}
 }
