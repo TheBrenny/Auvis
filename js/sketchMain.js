@@ -173,6 +173,10 @@ function drawRequestContext() {
 	fill(200, 30, 255);
 	noStroke();
 	text("Touch/Click the screen to start!", width / 2, height/2);
+	textSize(50);
+	text("[SPACE] to change Audio Sources", width / 2, height/2 + 125);
+	text("[LEFT ARROW] to rewind 10s", width / 2, height/2 + 125 + 75);
+	text("[RIGHT ARROW] to fastforward 10s", width / 2, height/2 + 125 + 75 + 75);
 	pop();
 }
 
