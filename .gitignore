@@ -1,2 +1,5 @@
+# Skip userScript from now on!
+userScript.js
+
 # NPM
 node_modules/

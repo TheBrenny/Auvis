@@ -27,11 +27,16 @@ freqRanges.allmid = [freqRanges.lowmid[0], freqRanges.highmid[1]];
 freqRanges.allhigh = [freqRanges.high[0], freqRanges.super[1]];
 
 var fileLoading = {
-	status: 0,
+	current: null,
 	alphaValMax: 750,
 	alphaVal: 0,
 	alphaFadeVal: 7
+	// obj: {
+	//	status: 0,
+	//	sound: null
+	//}
 };
+var soundCache = {};
 
 var sketch = {};
 
@@ -60,6 +65,7 @@ p5.FFT.prototype.setBins = function (bins) {
 };
 
 function setup() {
+	embedScript("./userScript.js");
 	loadSketchRegister();
 	var winMin = min(windowWidth, windowHeight);
 	canvas = createCanvas(winMin, winMin);
@@ -87,6 +93,7 @@ function setFftFreqRanges() {
 
 function setSoundAsInput() {
 	if (!!soundIn) soundIn.stop();
+	fileLoading.current = null;
 	soundIn = new p5.AudioIn();
 	fft.setInput(soundIn);
 	soundIn.start();
@@ -95,15 +102,26 @@ function setSoundAsInput() {
 function setSoundAsFile(soundPath) {
 	if (!!soundIn) soundIn.stop();
 
-	fileLoading.status = 0;
+	let fn = soundPath;
 	fileLoading.alphaVal = fileLoading.alphaValMax;
+	fileLoading.current = fn;
 
-	soundIn = loadSound(soundPath, () => {
-		fileLoading.status = 1;
-		soundIn.play();
-	}, () => console.log("error loading file: " + soundPath), (v) => {
-		fileLoading.status = v;
-	});
+	if (!!fileLoading[fn]) {
+		if (fileLoading[fn].status == 1) fileLoading[fn].sound.jump(); // reset play head on the object and begin playback
+	} else {
+		fileLoading[fn] = {};
+		fileLoading[fn].status = 0;
+		fileLoading[fn].fileName = soundPath;
+		fileLoading[fn].name = soundPath.substring(soundPath.lastIndexOf('/') + 1, soundPath.lastIndexOf("."));
+
+		fileLoading[fn].sound = loadSound(soundPath, () => {
+			fileLoading[fn].status = 1;
+			if (fileLoading.current == fn) fileLoading[fn].sound.play();
+		}, () => console.log("error loading file: " + soundPath), (v) => {
+			fileLoading[fn].status = v;
+		});
+	}
+	soundIn = fileLoading[fn].sound;
 
 	fft.setInput(soundIn);
 }
@@ -123,16 +141,21 @@ function drawTitle() {
 }
 
 function drawFileLoader() {
-	if (fileLoading.status > 0 && fileLoading.alphaVal >= 0) {
+	if (fileLoading.current == null) return;
+
+	let file = fileLoading[fileLoading.current];
+	if (file.status > 0 && fileLoading.alphaVal >= 0) {
 		push();
 		colorMode(RGB);
 		fill(200, 30, 255, fileLoading.alphaVal);
 		noStroke();
-		rect(0, height - 20, map(fileLoading.status, 0, 1, 0, width), 20);
+		textSize(30);
+		textAlign(CENTER, BOTTOM);
+		rect(0, height - 20, map(file.status, 0, 1, 0, width), 20);
 
-		if (fileLoading.status == 1) {
-			fileLoading.alphaVal -= fileLoading.alphaFadeVal;
-		}
+		if (!!file.name) text(file.name, width / 2, height - 25);
+
+		if (file.status == 1) fileLoading.alphaVal -= fileLoading.alphaFadeVal;
 	}
 }
 
@@ -197,7 +220,7 @@ function registerSketch(sketchName, fileName) {
 }
 
 function registerSoundFile(fileName) {
-	soundFiles.append(fileName);
+	soundFiles.push(fileName);
 }
 
 function sketchChanged() {
@@ -213,13 +236,12 @@ function resetSketch() {
 }
 
 function loadSketchRegister() {
-	var body = document.body;
-	var script;
 	for (var s in sketch) embedScript("./js/" + sketch[s].fileName + ".js");
 }
 
 function embedScript(script) {
-	scriptEl = document.createElement("script");
+	var body = document.body;
+	var scriptEl = document.createElement("script");
 	scriptEl.src = script;
 	body.appendChild(scriptEl);
 }
@@ -232,5 +254,3 @@ registerSketch("exagerate");
 registerSketch("background");
 //registerSketch("kuana"); // commented because there's undeclared variables
 registerSketch("madcat");
-
-embedScript("./userScript.js");
