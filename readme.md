@@ -8,17 +8,21 @@
 Auvis is a cool little project to diminish productivity with flashing colours and lights. Open the index, allow the audio recording, and play music! Watch the pretty colours dance! 
 
 Features:
-1. A variety of visualisation styles (not just bars and not just shapes)
-2. Visualises the sound from a "line in"
+1. A variety of visualisation styles (not just bars and shapes).
+2. Visualises the sound from a "line in" or an audio file.
 3. Easily extendible!
 
-Don't stress if you can't play sound to Stereo Mix/Line In on your computer. I'm just waiting on SoundCloud to get back to me with a wicked API Key, and then I'll be streaming a Soundcloud Playlist! Oooooooweeeee!
+Don't stress if you can't play sound to Stereo Mix/Line In on your computer, you can always register audio files and press the spacebar to play them! Oooooooweeeee!
 
 Want to contribute your own creation? All you have to do is follow this template:
 
+`userScript.js`
 ```javascript
 registerSketch("template");
+```
 
+`template.js`
+```javascript
 sketch.template.init = function() {
     // This is the same as p5's setup function.
 }

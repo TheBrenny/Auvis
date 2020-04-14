@@ -3,7 +3,7 @@
 var previousEnergiesMax = 10;
 var energyChangeThreshold = 75;
 var exagerationMultiplier = 3;
-var smoothingFactor = 0.9;
+var smoothingFactor = 0.87;
 var previousEnergies = [];
 
 sketch.exagerate.init = function() {

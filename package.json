@@ -1,0 +1,28 @@
+{
+	"name": "auvis",
+	"version": "1.0.0",
+	"description": "An audio visualiser built on p5 and p5-sound!",
+	"main": "startServer.js",
+	"scripts": {
+		"start": "node startServer.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/TheBrenny/Auvis.git"
+	},
+	"keywords": [
+		"p5",
+		"p5-sound",
+		"audio",
+		"visualiser"
+	],
+	"author": "TheBrenny",
+	"license": "UNLICENSED",
+	"bugs": {
+		"url": "https://github.com/TheBrenny/Auvis/issues"
+	},
+	"homepage": "https://github.com/TheBrenny/Auvis#readme",
+	"dependencies": {
+		"express": "^4.17.1"
+	}
+}
