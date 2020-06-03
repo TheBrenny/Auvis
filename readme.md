@@ -19,6 +19,7 @@ Want to contribute your own creation? All you have to do is follow this template
 `userScript.js`
 ```javascript
 registerSketch("template");
+registerSoundFile("someSong.mp3");
 ```
 
 `template.js`
