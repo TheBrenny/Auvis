@@ -1,4 +1,5 @@
 var bins = 1024;
+var defaultBins = 2048;
 var binWidth;
 var screenSizeMultiplier;
 var alphaValMax = 750;
@@ -21,11 +22,12 @@ var freqRanges = {
 	"mid": [350, 700],
 	"highmid": [700, 1200],
 	"high": [1200, 5000],
-	"super": [5000, 1000]
+	"super": [5000, 10000]
 };
 freqRanges.allbass = [freqRanges.subbass[0], freqRanges.bass[1]];
 freqRanges.allmid = [freqRanges.lowmid[0], freqRanges.highmid[1]];
 freqRanges.allhigh = [freqRanges.high[0], freqRanges.super[1]];
+binWidth = (freqRanges.allhigh[1] - freqRanges.allbass[0]) / bins;
 
 var fileLoading = {
 	current: null,
@@ -38,6 +40,11 @@ var fileLoading = {
 var soundCache = {};
 
 var sketch = {};
+var debugging = false;
+
+var circleFn = function (x) {
+	return sqrt(1 - x * x);
+};
 
 Object.defineProperty(Object.prototype, "objSize", {
 	enumerable: false,
@@ -172,11 +179,11 @@ function drawRequestContext() {
 	textAlign(CENTER, CENTER);
 	fill(200, 30, 255);
 	noStroke();
-	text("Touch/Click the screen to start!", width / 2, height/2);
+	text("Touch/Click the screen to start!", width / 2, height / 2);
 	textSize(50);
-	text("[SPACE] to change Audio Sources", width / 2, height/2 + 125);
-	text("[LEFT ARROW] to rewind 10s", width / 2, height/2 + 125 + 75);
-	text("[RIGHT ARROW] to fastforward 10s", width / 2, height/2 + 125 + 75 + 75);
+	text("[SPACE] to change Audio Sources", width / 2, height / 2 + 125);
+	text("[LEFT ARROW] to rewind 10s", width / 2, height / 2 + 125 + 75);
+	text("[RIGHT ARROW] to fastforward 10s", width / 2, height / 2 + 125 + 75 + 75);
 	pop();
 }
 
@@ -185,11 +192,22 @@ function draw() {
 	background(16, 16, 16);
 
 	spectrum = fft.analyze();
+	push();
 	if (sketch.selected && sketch[sketch.selected].draw) sketch[sketch.selected].draw();
+	pop();
+	if (this.debugging) {
+		push();
+		if (sketch.selected && sketch[sketch.selected].debug) {
+			sketch[sketch.selected].debug();
+		} else {
+			sketch.simple.debug();
+		}
+		pop();
+	}
 
 	drawTitle();
 	drawFileLoader();
-	if(!contextReady) drawRequestContext();
+	if (!contextReady) drawRequestContext();
 }
 
 function getEnergy(freq1, freq2) {
@@ -237,6 +255,9 @@ function keyPressed() {
 		case RIGHT_ARROW: // right arrow
 			if (soundState != 0) soundIn.elt.currentTime += 10;
 			break;
+		default:
+			if (key == 'd') debugging = !debugging;
+			break;
 	}
 }
 
@@ -258,8 +279,8 @@ function sketchChanged() {
 
 function resetSketch() {
 	fft.smooth(0.8);
-	bins = 1024;
-	fft.setBins(bins);
+	bins = defaultBins;
+	fft.bins = bins;
 	alphaVal = alphaValMax;
 }
 
@@ -282,3 +303,4 @@ registerSketch("exagerate");
 registerSketch("background");
 //registerSketch("kuana"); // commented because there's undeclared variables
 registerSketch("madcat");
+registerSketch("starfield");

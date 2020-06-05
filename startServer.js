@@ -8,4 +8,4 @@ app.get("/", (req, res) => {
 
 app.use(express.static(__dirname + "/"));
 
-app.listen(port, () => console.log("Server running on " + port + "..."));
+app.listen(port, () => console.log("Started! Connect to\n\thttp://localhost:" + port + ""));

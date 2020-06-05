@@ -6,11 +6,11 @@ sketch.energy.init = function() {};
 
 sketch.energy.draw = function() {
     energies = {
-        bass: fft.getEnergy("bass"),
-        lowMid: fft.getEnergy("lowMid"),
-        mid: fft.getEnergy("mid"),
-        highMid: fft.getEnergy("highMid"),
-        treble: fft.getEnergy("treble")
+        bass: getEnergy("allbass"),
+        lowMid: getEnergy("lowmid"),
+        mid: getEnergy("mid"),
+        highMid: getEnergy("highmid"),
+        treble: getEnergy("allhigh")
     };
     colorMode(HSB);
     var i = 0;

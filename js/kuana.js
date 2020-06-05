@@ -35,7 +35,7 @@ sketch.kuana.draw = function () {
         ang -= 90;
         ko = getOffset(ang, radius);
 
-        vol1 = getOffset(ang, map(fft.getEnergy(map(i, 0, points, minFreq, maxFreq)), 0, 255, 0, maxLength));
+        vol1 = getOffset(ang, map(getEnergy(map(i, 0, points, minFreq, maxFreq)), 0, 255, 0, maxLength));
 
         lx1 = kx + ko[0] - (vol1[0] / 2);
         ly1 = ky + ko[1] - (vol1[1] / 2);
@@ -46,7 +46,7 @@ sketch.kuana.draw = function () {
         ang -= 90;
         ko = getOffset(ang, radius);
 
-        vol2 = getOffset(ang, map(fft.getEnergy(map((i + 1) % points, 0, points, minFreq, maxFreq)), 0, 255, 0, maxLength));
+        vol2 = getOffset(ang, map(getEnergy(map((i + 1) % points, 0, points, minFreq, maxFreq)), 0, 255, 0, maxLength));
 
         lx2 = kx + ko[0] - (vol2[0] / 2);
         ly2 = ky + ko[1] - (vol2[1] / 2);
